@@ -1,0 +1,91 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <script type="text/javascript" src="/jquery-2.1.0.min.js"></script>	
+    <script type="text/javascript" src="/jquery.plugin.min.js"></script>	
+    <link rel="stylesheet" href="/pure-min.css" />    
+    <link rel="stylesheet" href="/simplePagination.css" />    
+    <script type="text/javascript" src="/jquery.simplePagination.js"></script>	
+    <link rel="stylesheet" href="/smoothness.datepick.css" />    
+    <script type="text/javascript" src="/jquery.datepick.js"></script>	
+    <link rel="stylesheet" href="/leaflet.css" />    
+    <script type="text/javascript" src="/leaflet.js"></script>
+    <link rel="stylesheet" href="/leaflet.draw.css" />
+    <script type="text/javascript" src="/leaflet.draw.js"></script>
+    <link rel="stylesheet" href="/MarkerCluster.css"/>
+    <link rel="stylesheet" href="/MarkerCluster.Default.css" />
+    <script type="text/javascript" src="/leaflet.markercluster.js"></script>    
+    <link rel="stylesheet" href="/tipsy.css" />
+    <script type="text/javascript" src="/jquery.tipsy.js"></script>    
+    <link rel="stylesheet" href="/geodata.css"/>
+    <script type="text/javascript" src="/geodata.js"></script>
+    <title>Kart</title>
+</head>
+<body>	
+
+	<div id="map_button" class="div_button" title="Åpne kartet"></div>
+	<div id="map_menu" class="div_menu">				
+		<div id="map_tools_create" class="div_tools" title="Opprett ny polygon"></div>		
+		<div class="div_separator"></div>
+		<div id="map_tools_edit" class="div_tools" title="Rediger polygons"></div>
+		<div id="map_tools_edit_menu" class="div_toolmenu">
+			<div id="map_tools_edit_save" class="div_tools" title="Lagre redigering av polygons"></div>
+			<div id="map_tools_edit_cancel" class="div_tools" title="Avbryt redigering av polygons"></div>
+		</div>
+		<div class="div_separator"></div>
+		<div id="map_tools_delete" class="div_tools" title="Slett polygons"></div>
+		<div id="map_tools_delete_menu" class="div_toolmenu">
+			<div id="map_tools_delete_save" class="div_tools" title="Lagre sletting av polygons"></div>
+			<div id="map_tools_delete_cancel" class="div_tools" title="Avbryt sletting av polygons"></div>
+		</div>
+		<div class="div_separator"></div>
+		<div id="map_tools_search" class="div_tools" title="Filter søk"></div>
+	</div>
+	<div id="map_content" class="div_content"></div>
+	<div id="centerpoint">
+		<div id="map_dialog_search" class="div_dialog">
+			<form class="pure-form pure-form-aligned" method="javascript:void(0);">
+			<fieldset>
+				<legend>Velg hvilke filtere som skal benyttes ved databaseoppslag</legend>
+				<div class="pure-control-group">
+					<label for="Prøvetype">Prøvetype</label>
+					<select id="sample_select" style="width: 200px"></select>
+				</div>
+				<div class="pure-control-group">
+					<label for="Ref.dato fra">Ref.dato fra</label>
+					<input id="refdate_from" type="text" style="width: 200px "placeholder="Ref.dato fra"/>
+				</div>
+				<div class="pure-control-group">
+					<label for="Ref.dato til">Ref.dato til</label>
+					<input id="refdate_to" type="text" style="width: 200px "placeholder="Ref.dato til"/>
+				</div>
+			</fieldset>
+			</form>
+		</div>
+	</div>
+
+	<div id="summary_button" class="div_button" title="Åpne sammendrag"></div>
+	<div id="summary_menu" class="div_menu"></div>
+	<div id="summary_content" class="div_content"></div>
+		
+	<div id="details_button" class="div_button" title="Åpne detaljer"></div>
+	<div id="details_menu" class="div_menu">
+		<div id="pagination" style="margin-top: 16px; margin-left: 16px;"></div>
+	</div>
+	<div id="details_content" class="div_content">
+		<table id="tbl_coords" class="pure-table table-default"> 
+			<thead><tr><th>Id</th><th>Prøvetype</th><th align="right">Aktivitet</th><th align="right">Usikkerhet</th><th align="right">Sigma</th><th align="right">Referanse Dato</th><th>Breddegrad</th><th>Lengdegrad</th></tr></thead>
+			<tbody></tbody>
+		</table>
+	</div>		
+		
+	<div id="account_button" class="div_button" title="Åpne min konto"></div>
+	<div id="account_menu" class="div_menu"></div>
+	<div id="account_content" class="div_content">	
+	</div>		
+
+	<script>
+	    initMap();    
+	</script>	
+</body>
+</html>
