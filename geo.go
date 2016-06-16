@@ -1,19 +1,15 @@
 package main
 
 import (
-	"bytes"
-	"encoding/base64"
 	"encoding/json"
-	"github.com/go-martini/martini"
-	"github.com/martini-contrib/render"
+	"github.com/gin-gonic/contrib/static"
+	"github.com/gin-gonic/gin"
+	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 	"io/ioutil"
-	"labix.org/v2/mgo"
-	"labix.org/v2/mgo/bson"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
 )
@@ -51,82 +47,42 @@ type GeoJson struct {
 	}
 }
 
+var db *mgo.Database
+
 func panicIf(e error) {
 	if e != nil {
 		panic(e)
 	}
 }
 
-func checkRecover(rw http.ResponseWriter) {
-	if r := recover(); r != nil {
-		err, ok := r.(error)
-		if !ok {
-			log.Printf("%v\n", r)
-			http.Error(rw, "An error occurred", http.StatusInternalServerError)
-		} else {
-			log.Println(err.Error())
-			http.Error(rw, err.Error(), http.StatusInternalServerError)
-		}
-	}
+func handleGetRoot(c *gin.Context) {
+
+	c.HTML(200, "index.tmpl", nil)
 }
 
-func requireAuth(w http.ResponseWriter, r *http.Request, m *mgo.Database) {
+func handleGetSampleTypes(c *gin.Context) {
 
-	authHeader := r.Header.Get("Authorization")
-
-	if strings.HasPrefix(authHeader, "Basic ") {
-		if authItems := strings.Split(authHeader, " "); len(authItems) == 2 && len(authItems[1]) > 0 {
-			if authPair, err := base64.StdEncoding.DecodeString(authItems[1]); err == nil {
-				if userInfo := strings.Split(string(authPair), ":"); len(userInfo) == 2 {
-					u := User{}
-					c := m.C("users")
-					if err := c.Find(bson.M{"username": userInfo[0], "password": userInfo[1]}).One(&u); err == nil {
-						log.Printf("User %s (%s) authenticated successfully\n", u.Username, u.Email)
-						return // Return on success
-					}
-				}
-			}
-		}
-	}
-
-	w.Header().Set("WWW-Authenticate", "Basic realm=\"Authorization Required\"")
-	http.Error(w, "Not Authorized", http.StatusUnauthorized)
-}
-
-func handleGetRoot(w http.ResponseWriter, rend render.Render) {
-
-	defer checkRecover(w)
-	rend.HTML(200, "index", nil)
-}
-
-func handleGetSampleTypes(w http.ResponseWriter, r *http.Request, m *mgo.Database) {
-
-	defer checkRecover(w)
+	//defer checkRecover(w)
 	var stypes []string
-	c := m.C("data")
-	err := c.Find(nil).Distinct("sample_type", &stypes)
+	coll := db.C("data")
+	err := coll.Find(nil).Distinct("sample_type", &stypes)
 	panicIf(err)
 
-	bs, err := json.Marshal(&stypes)
-	panicIf(err)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(bs)
+	c.JSON(200, stypes)
 }
 
-func handleGetSamples(w http.ResponseWriter, r *http.Request, m *mgo.Database) {
+func handleGetSamples(c *gin.Context) {
 
-	defer checkRecover(w)
-	body, err := ioutil.ReadAll(r.Body)
+	//defer checkRecover(w)
+	body, err := ioutil.ReadAll(c.Request.Body)
 	panicIf(err)
 
 	gj := new(GeoJson)
 	err = json.Unmarshal(body, gj)
 	panicIf(err)
 
-	c := m.C("data")
-	var buf bytes.Buffer
-	buf.WriteString("[")
+	coll := db.C("data")
+	var samples []Sample
 
 	for n := 0; n < len(gj.Features); n++ {
 
@@ -156,27 +112,16 @@ func handleGetSamples(w http.ResponseWriter, r *http.Request, m *mgo.Database) {
 		}
 		query["location.coordinates"] = bson.M{"$within": bson.M{"$polygon": geom.Coordinates[0]}}
 
-		log.Println(geom.Coordinates[0])
+		//log.Println(geom.Coordinates[0])
 
 		var a []Sample
-		err := c.Find(query).Sort("sample_type", "-activity").All(&a)
+		err := coll.Find(query).Sort("sample_type", "-activity").All(&a)
 		panicIf(err)
 
-		for i := 0; i < len(a); i++ {
-			b, err := json.Marshal(a[i])
-			panicIf(err)
-			buf.Write(b)
-			buf.WriteString(",")
-		}
+		samples = append(samples, a...)
 	}
 
-	if buf.String()[buf.Len()-1] == ',' {
-		buf.Truncate(buf.Len() - 1)
-	}
-	buf.WriteString("]")
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(buf.Bytes())
+	c.JSON(200, samples)
 }
 
 func main() {
@@ -193,15 +138,16 @@ func main() {
 	}
 	defer mongo.Close()
 	//mongo.SetMode(mgo.Monotonic, true)
-	db := mongo.DB("geo")
+	db = mongo.DB("geo")
 
-	m := martini.Classic()
-	m.Use(render.Renderer())
-	m.Map(db)
+	r := gin.Default()
+	//r.Use(static.Serve("/public"))
+	r.Use(static.Serve("/", static.LocalFile("public", false)))
+	r.LoadHTMLGlob("templates/*.tmpl")
 
-	m.Get("/api_get_sample_types", requireAuth, handleGetSampleTypes)
-	m.Post("/api_get_samples", requireAuth, handleGetSamples)
-	m.Get("/", requireAuth, handleGetRoot)
+	r.GET("/api_get_sample_types", handleGetSampleTypes)
+	r.POST("/api_get_samples", handleGetSamples)
+	r.GET("/", handleGetRoot)
 
-	m.Run()
+	r.Run(":3000")
 }
