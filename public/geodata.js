@@ -1,3 +1,7 @@
+// License: GPL2
+// Copyright (C) 2016  Dag Robole
+// Authors: Dag Robole,
+
 var map;
 var polygons;
 var markers;
@@ -105,15 +109,15 @@ function initMap() {
 	}
 }
 
-function updateMap() {		
+function updateMap() {
 
 	var geoj = polygons.toGeoJSON();
-
+	
 	for(var i=0; i<geoj.features.length; i++) {
 		geoj.features[i].properties["sample_type"] = $("#sample_select").val();
 		geoj.features[i].properties["refdate_from"] = $("#refdate_from").val();
 		geoj.features[i].properties["refdate_to"] = $("#refdate_to").val();
-	}
+	}	
 
 	$.ajax({
 		url: '/api_get_samples',
@@ -123,6 +127,8 @@ function updateMap() {
 		dataType:'json',
 		success : function(data) {					
 			try {
+				if(data == null)
+					return;
 				var datalen = data.length;
 				var useMap = datalen <= 20000;
 				var markerList = [];					
@@ -183,6 +189,8 @@ function updateMap() {
 
 function updateDetails() {
     var items = $("#tbl_coords tbody tr");
+    if(items == null)
+    	return;
     var numItems = items.length;
     var perPage = 100;
     items.slice(perPage).hide();
@@ -245,7 +253,7 @@ $(document).ready(function() {
 
 	$("#map_tools_delete_save").click(function() {							
 		$('#map_tools_delete_menu').hide(animationSpeed);
-		polygonDelete.save();
+		//polygonDelete.save();
 		polygonDelete.disable();
 	});		
 

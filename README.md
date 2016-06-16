@@ -1,6 +1,6 @@
 # geo
 
-Interactive map of sample data, written in Go
+Interactive map of sample data, written in Go and Javascript
 
 
 __Status:__
