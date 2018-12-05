@@ -118,16 +118,14 @@ func handleGetSamples(c *gin.Context) {
 			d2, err := time.Parse(dateFormat, props["refdate_to"])
 			panicIf(err)
 			query["refdate"] = bson.M{"$gte": d1, "$lt": d2}
-		} else {
-			if props["refdate_from"] != "" {
-				d, err := time.Parse(dateFormat, props["refdate_from"])
-				panicIf(err)
-				query["refdate"] = bson.M{"$gte": d}
-			} else if props["refdate_to"] != "" {
-				d, err := time.Parse(dateFormat, props["refdate_to"])
-				panicIf(err)
-				query["refdate"] = bson.M{"$lt": d}
-			}
+		} else if props["refdate_from"] != "" {
+			d, err := time.Parse(dateFormat, props["refdate_from"])
+			panicIf(err)
+			query["refdate"] = bson.M{"$gte": d}
+		} else if props["refdate_to"] != "" {
+			d, err := time.Parse(dateFormat, props["refdate_to"])
+			panicIf(err)
+			query["refdate"] = bson.M{"$lt": d}
 		}
 		query["location.coordinates"] = bson.M{"$within": bson.M{"$polygon": geom.Coordinates[0]}}
 

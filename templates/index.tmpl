@@ -1,31 +1,31 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-    <script type="text/javascript" src="/jquery-2.1.0.min.js"></script>	
-    <script type="text/javascript" src="/jquery.plugin.min.js"></script>	
-    <link rel="stylesheet" href="/pure-min.css" />    
-    <link rel="stylesheet" href="/simplePagination.css" />    
-    <script type="text/javascript" src="/jquery.simplePagination.js"></script>	
-    <link rel="stylesheet" href="/smoothness.datepick.css" />    
-    <script type="text/javascript" src="/jquery.datepick.js"></script>	
-    <link rel="stylesheet" href="/leaflet.css" />    
+    <script type="text/javascript" src="/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="/jquery.plugin.min.js"></script>
+    <link rel="stylesheet" href="/pure-min.css" />
+    <link rel="stylesheet" href="/simplePagination.css" />
+    <script type="text/javascript" src="/jquery.simplePagination.js"></script>
+    <link rel="stylesheet" href="/smoothness.datepick.css" />
+    <script type="text/javascript" src="/jquery.datepick.js"></script>
+    <link rel="stylesheet" href="/leaflet.css" />
     <script type="text/javascript" src="/leaflet.js"></script>
     <link rel="stylesheet" href="/leaflet.draw.css" />
     <script type="text/javascript" src="/leaflet.draw.js"></script>
     <link rel="stylesheet" href="/MarkerCluster.css"/>
     <link rel="stylesheet" href="/MarkerCluster.Default.css" />
-    <script type="text/javascript" src="/leaflet.markercluster.js"></script>    
+    <script type="text/javascript" src="/leaflet.markercluster.js"></script>
     <link rel="stylesheet" href="/tipsy.css" />
-    <script type="text/javascript" src="/jquery.tipsy.js"></script>    
+    <script type="text/javascript" src="/jquery.tipsy.js"></script>
     <link rel="stylesheet" href="/geodata.css"/>
     <script type="text/javascript" src="/geodata.js"></script>
     <title>Kart</title>
 </head>
-<body>	
+<body>
 
 	<div id="map_button" class="div_button" title="Åpne kartet"></div>
-	<div id="map_menu" class="div_menu">				
-		<div id="map_tools_create" class="div_tools" title="Opprett ny polygon"></div>		
+	<div id="map_menu" class="div_menu">
+		<div id="map_tools_create" class="div_tools" title="Opprett ny polygon"></div>
 		<div class="div_separator"></div>
 		<div id="map_tools_edit" class="div_tools" title="Rediger polygons"></div>
 		<div id="map_tools_edit_menu" class="div_toolmenu">
@@ -67,25 +67,25 @@
 	<div id="summary_button" class="div_button" title="Åpne sammendrag"></div>
 	<div id="summary_menu" class="div_menu"></div>
 	<div id="summary_content" class="div_content"></div>
-		
+
 	<div id="details_button" class="div_button" title="Åpne detaljer"></div>
 	<div id="details_menu" class="div_menu">
 		<div id="pagination" style="margin-top: 16px; margin-left: 16px;"></div>
 	</div>
 	<div id="details_content" class="div_content">
-		<table id="tbl_coords" class="pure-table table-default"> 
+		<table id="tbl_coords" class="pure-table table-default">
 			<thead><tr><th>Id</th><th>Prøvetype</th><th align="right">Aktivitet</th><th align="right">Usikkerhet</th><th align="right">Sigma</th><th align="right">Referanse Dato</th><th>Breddegrad</th><th>Lengdegrad</th></tr></thead>
 			<tbody></tbody>
 		</table>
-	</div>		
-		
+	</div>
+
 	<div id="account_button" class="div_button" title="Åpne min konto"></div>
 	<div id="account_menu" class="div_menu"></div>
-	<div id="account_content" class="div_content">	
-	</div>		
+	<div id="account_content" class="div_content">
+	</div>
 
 	<script>
-	    initMap();    
-	</script>	
+	    initMap();
+	</script>
 </body>
 </html>
